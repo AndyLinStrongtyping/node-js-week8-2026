@@ -54,15 +54,6 @@ async function main() {
     { score: 92, student: students[2], subject: subjects[2] },
   ])
 
-  // ================================================================================
-  // TODO：依照任務內容的規格種資料（至少 2 班、2 科目、幾位學生、幾筆成績）
-  //   1. 先種 CLASS / SUBJECT
-  //   2. 再種 STUDENT（記得接上 class）
-  //   3. 最後種 GRADE（記得接上 student + subject）
-  //      關聯的接法：relation 屬性直接放前面存好的物件（TypeORM 會自動取出 id 填進外鍵），例如：
-  //      studentRepo.save({ name: '...', class: 班級物件 })
-  //      gradeRepo.save({ score: 95, student: 學生物件, subject: 科目物件 })
-  // ================================================================================
 
   console.log('🌱 seed 完成')
   await dataSource.destroy()

@@ -23,17 +23,7 @@ async function main() {
   const SkillRepo = dataSource.getRepository('Skill');
   const CourseRepo = dataSource.getRepository('Course');
   
-  // ======================================================================
-  // TODO：依照任務內容的規格寫入資料
-  //   1. SKILL 三筆：重訓、瑜珈、飛輪
-  //   2. USER 兩位教練，role 都為 'COACH'：
-  //      海格教練（coach1@livefit.tw）、小美教練（coach2@livefit.tw）
-  //   3. COURSE 四堂課：肌力入門班、週末飛輪、晨間瑜珈、核心特訓
-  //      每堂課記得接上教練跟技能
-  //      關聯的接法：user / skill 直接放前面存好的教練、技能物件
-  //     （TypeORM 會自動取出它的 id 填進外鍵），寫法範例：
-  //      courseRepo.save({ name: '...', user: 教練物件, skill: 技能物件 })
-  // ======================================================================
+
   const Skills = await SkillRepo.save([
   { name: '重訓' },
   { name: '瑜珈' },
