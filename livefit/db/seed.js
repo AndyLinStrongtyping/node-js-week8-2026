@@ -5,6 +5,7 @@
  */
 const { dataSource } = require('./data-source')
 
+
 /** 清空：被 FK 指著的表最後刪（先刪 COURSE，再 USER / SKILL）。
  *  不用 clear()（TRUNCATE 會被 FK 擋）、不用 delete({})（TypeORM 拒絕空條件）。 */
 async function clearAll() {
@@ -18,7 +19,10 @@ async function clearAll() {
 async function main() {
   await dataSource.initialize()
   await clearAll()
-
+  const UserRepo = dataSource.getRepository('User');
+  const SkillRepo = dataSource.getRepository('Skill');
+  const CourseRepo = dataSource.getRepository('Course');
+  
   // ======================================================================
   // TODO：依照任務內容的規格寫入資料
   //   1. SKILL 三筆：重訓、瑜珈、飛輪
@@ -30,6 +34,58 @@ async function main() {
   //     （TypeORM 會自動取出它的 id 填進外鍵），寫法範例：
   //      courseRepo.save({ name: '...', user: 教練物件, skill: 技能物件 })
   // ======================================================================
+  const Skills = await SkillRepo.save([
+  { name: '重訓' },
+  { name: '瑜珈' },
+  { name: '飛輪' },
+]);
+
+  const Users = await UserRepo.save([
+  { name: '海格教練', email: 'coach1@livefit.tw', role: 'COACH' },
+  { name: '小美教練', email: 'coach2@livefit.tw', role: 'COACH' },
+]);
+
+const Courses = await CourseRepo.save([
+  {
+    name: '肌力入門班',
+    description: '適合初學者的肌力訓練課程',
+    start_at: new Date('2024-07-01T09:00:00'),
+    end_at: new Date('2024-07-01T10:00:00'),
+    max_participants: 10,
+    user: Users[0],
+    skill: Skills[0],
+  },
+  {
+    name: '週末飛輪',
+    description: '週末放鬆的飛輪課程',
+    start_at: new Date('2024-07-01T10:00:00'),
+    end_at: new Date('2024-07-01T11:00:00'),
+    max_participants: 10,
+    user: Users[1],
+    skill: Skills[2],
+  },
+  {
+    name: '晨間瑜珈',
+    description: '清晨的瑜珈課程',
+    start_at: new Date('2024-07-01T08:00:00'),
+    end_at: new Date('2024-07-01T09:00:00'),
+    max_participants: 10,
+    user: Users[0],
+    skill: Skills[1],
+  },
+  {
+    name: '核心特訓',
+    description: '專注於核心肌群的訓練課程',
+    start_at: new Date('2024-07-01T11:00:00'),
+    end_at: new Date('2024-07-01T12:00:00'),
+    max_participants: 10,
+    user: Users[1],
+    skill: Skills[0],
+  },
+]);
+
+ 
+
 
   console.log('🌱 seed 完成')
   await dataSource.destroy()
