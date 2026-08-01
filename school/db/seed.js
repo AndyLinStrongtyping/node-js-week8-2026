@@ -9,7 +9,10 @@ const { dataSource } = require('./data-source')
  *  不用 clear()（TRUNCATE 會被 FK 擋）、不用 delete({})（TypeORM 拒絕空條件）。 */
 async function clearAll() {
   const ORDER = [
-    // TODO: 按「你的」FK 依賴順序填 entity name（先刪 Grade，再 Student，最後 Class / Subject）
+    'Grade',
+    'Student',
+    'Class',
+    'Subject',
   ]
   for (const name of ORDER) {
     if (dataSource.hasMetadata(name)) {
@@ -21,6 +24,35 @@ async function clearAll() {
 async function main() {
   await dataSource.initialize()
   await clearAll()
+
+  const classRepo = dataSource.getRepository('Class')
+  const subjectRepo = dataSource.getRepository('Subject')
+  const studentRepo = dataSource.getRepository('Student')
+  const gradeRepo = dataSource.getRepository('Grade')
+
+  const classes = await classRepo.save([
+    { name: '一年甲班' },
+    { name: '一年乙班' },
+    { name: '一年丙班' },
+  ])
+
+  const subjects = await subjectRepo.save([
+    { name: '國文' },
+    { name: '英文' },
+    { name: '數學' },
+  ])
+
+  const students = await studentRepo.save([
+    { name: '王小明', class: classes[0] },
+    { name: '李小華', class: classes[1] },
+    { name: '陳小美', class: classes[2] },
+  ])
+
+  await gradeRepo.save([
+    { score: 95, student: students[0], subject: subjects[0] },
+    { score: 88, student: students[1], subject: subjects[1] },
+    { score: 92, student: students[2], subject: subjects[2] },
+  ])
 
   // ================================================================================
   // TODO：依照任務內容的規格種資料（至少 2 班、2 科目、幾位學生、幾筆成績）
