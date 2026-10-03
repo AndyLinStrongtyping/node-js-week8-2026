@@ -2,7 +2,7 @@
   "name": "school-grade-system",
   "version": "1.0.0",
   "private": true,
-  "description": "W8 考場 — 校園成績系統：你設計 schema，讓它活過來。",
+  "description": "School grading relational schema with TypeORM migrations and seed data",
   "scripts": {
     "start": "node scripts/check-docker.js && docker compose up -d && node scripts/wait-db.js",
     "stop": "docker compose stop",
